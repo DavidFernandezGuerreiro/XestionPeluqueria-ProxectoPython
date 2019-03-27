@@ -1,0 +1,113 @@
+PROGRAMA PELUQUERIA
+*******************
+
+Este programa fai a xestión dunha peluquería.
+
+Guía de uso da aplicación
+=========================
+
+Neste apartado imos ver como usar o dito programa.
+
+Ventana principal
+-----------------
+A ventana principal dispón de 4 botóns cunhas imaxes representativas de cada función.
+
+#. Xestión clientes
+#. Xestión servizos
+#. Xestión facturas
+#. Close application
+
+.. figure::  _static/images/MenuPrincipalPeluqueria.PNG
+   :align: center
+
+Esto é o texto de pé da imaxe
+
+
+Elementos de listas h4
+++++++++++++++++++++++
+
+Se pueden incluir listas no enumeradas:
+* Elemento 1
+* Elemento 2
+
+Y listas numeradas:
+
+#. Elemento 1
+#. Elemento 2
+
+Marcado del texto h3
+++++++++++++++++++++
+
+Las palabras pueden ser *enfatizadas en cursiva* o con **negrita**
+También puedes definir ejemplos de código entre comillas, como cando hablas
+de un comando: ``sudo`` que nos proporciona superpoderes
+
+Táboas
+++++++
+
++-----------+-----------+-----------+-----------+
+|Cabeceira1 |Cabeceira2 |Cabeceira3 |Cabeceira4 |
++===========+===========+===========+===========+
+|Fila 1     |Columna2   |Columna3   |Columna4   |
++-----------+-----------+-----------+-----------+
+|Fila 2     |As columnas tamen poden unirse     |
++-----------+-----------+-----------+-----------+
+|Fila 3     |Celda de   |-Celdas    |           |
++-----------+           |-Conteñen  |           |
+|Fila 4     |           |-Bloques   |           |
++-----------+-----------+-----------+-----------+
+
+
+=========== =========== ===========
+       Entradas           Salidas
+----------------------- -----------
+       A        B         A ou B
+=========== =========== ===========
+False         False       False
+False         True        True
+True          False       False
+True          True        True
+=========== =========== ===========
+
+Hipervinculos
++++++++++++++
+
+http://www.danielcastelao.org
+
+`Hipervínculo con texto <http://www.danielcastelao.org/>`_
+
+Enlaces a seccións dentro da páxina:
+`Este é o titulo h2 <http://www.danielcastelao.org/>`_
+
+.. _Daniel_Castelao:
+.. figure::  _static/Imaxes/sound.jpg
+   :align: center
+
+Esto é o texto de pé da imaxe
+
+:download: `Baixa o ejemplo.rst <_static/ejemplo.rst>`_
+
+.. note::
+   Esta é unha advertencia
+
+.. warning::
+   Ollo o utilizar esta etiqueta!
+
+.. versionchanged::
+   0.0.1
+
+.. versionadded::
+   0.0.2
+
+Para meter un código no medio da páxina::
+
+    def minhafuncion(variable,variable2=True):
+        """Esta é un unha función
+           exemplo"""
+           return variable2
+
+
+Si queremos introducir código dentro dunha liña para mostrar un comando como ``sphinx-quickstart``
+
+Podemo falar de módulos como :mod:`threading` ou de clases como :class:`threading.Thread` . Tamén podes facer
+referencia a funcións con :func:`time.time`.

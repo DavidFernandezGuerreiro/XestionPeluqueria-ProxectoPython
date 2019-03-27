@@ -1,0 +1,403 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>XestionClientes &#8212; documentación de AppPeluqueria - </title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Código fuente para XestionClientes</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span> <span class="nn">gi</span>
+<span class="n">gi</span><span class="o">.</span><span class="n">require_version</span><span class="p">(</span><span class="s1">&#39;Gtk&#39;</span><span class="p">,</span> <span class="s1">&#39;3.0&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">gi.repository</span> <span class="k">import</span> <span class="n">Gtk</span>
+<span class="kn">from</span> <span class="nn">gi.repository</span> <span class="k">import</span> <span class="n">Pango</span>
+<span class="kn">from</span> <span class="nn">sqlite3</span> <span class="k">import</span> <span class="n">dbapi2</span>
+<span class="kn">from</span> <span class="nn">GraficaSexos</span> <span class="k">import</span> <span class="n">Grafica</span>
+
+<span class="c1"># nome das columnas do TreeView</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Cod. Cliente   &quot;</span><span class="p">,</span>
+           <span class="s2">&quot;Nome&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;Sexo&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;Telefono&quot;</span><span class="p">]</span>
+
+<span class="c1"># opcións do ComboBox</span>
+<span class="n">sexo</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;M&#39;</span><span class="p">],[</span><span class="s1">&#39;F&#39;</span><span class="p">]]</span>
+
+<span class="c1"># variables:</span>
+<span class="c1"># bbdd -&gt; conecta ca Base de Datos</span>
+<span class="c1"># cursor -&gt; executa as sentencias query e recolle os datos</span>
+<span class="n">bbdd</span> <span class="o">=</span> <span class="n">dbapi2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;PeluqueriaBD.dat&quot;</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">bbdd</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+<div class="viewcode-block" id="XestionClientes"><a class="viewcode-back" href="../XestionClientes.html#XestionClientes.XestionClientes">[documentos]</a><span class="k">class</span> <span class="nc">XestionClientes</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Window</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Ventana da xestión dos clientes</span>
+
+<span class="sd">        **Métodos:**</span>
+<span class="sd">            - __init__</span>
+
+<span class="sd">            - on_seleccion_changed</span>
+
+<span class="sd">            - on_btnBorrar_clicked</span>
+
+<span class="sd">            - refrescar</span>
+
+<span class="sd">            - on_btnEngadir_clicked</span>
+
+<span class="sd">            - on_btnLimpar_clicked</span>
+
+<span class="sd">            - on_btnCrearGrafica_clicked</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Gtk</span><span class="o">.</span><span class="n">Window</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Ventana Xestión de clientes&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_default_size</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span><span class="mi">230</span><span class="p">)</span>
+
+        <span class="c1"># caixa -&gt; é o Gtk.Box principal</span>
+        <span class="n">caixa</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Orientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">caixa</span><span class="p">)</span>
+
+        <span class="c1"># stack -&gt; é un StackSwitcher que nos separará &quot;Mostrar clientes&quot; e &quot;Agregar clientes&quot;</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Stack</span><span class="p">()</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">set_transition_type</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">StackTransitionType</span><span class="o">.</span><span class="n">SLIDE_LEFT_RIGHT</span><span class="p">)</span>  <span class="c1"># que sea de un lado a otro</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">set_transition_duration</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>  <span class="c1"># cuanto queremos que dure</span>
+
+        <span class="c1"># os datos do modelo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listmodel</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">ListStore</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+        <span class="n">cursorClientes</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;select * from clientes&quot;</span><span class="p">)</span>
+        <span class="c1"># engadimos os valores no modelo</span>
+        <span class="k">for</span> <span class="n">rexistro</span> <span class="ow">in</span> <span class="n">cursorClientes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">listmodel</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rexistro</span><span class="p">)</span>
+
+        <span class="c1"># engadimos o modelo para o ComboBox do campo sexo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sexoModel</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">ListStore</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sexo</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sexoModel</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sexo</span><span class="p">[</span><span class="n">f</span><span class="p">])</span>
+
+        <span class="c1"># unha vista en árbore para ver os datos no modelo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">TreeView</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">listmodel</span><span class="p">)</span>
+
+        <span class="c1"># celda -&gt; para cada columna:</span>
+        <span class="n">celda</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">CellRendererText</span><span class="p">()</span> <span class="c1"># creo un tipo de celda</span>
+
+        <span class="n">celdaCod</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">CellRendererText</span><span class="p">(</span><span class="n">xalign</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span> <span class="c1"># creo un tipo de celda</span>
+        <span class="n">columnaCod</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">TreeViewColumn</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">celdaCod</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># creo unha columna</span>
+        <span class="n">columnaCod</span><span class="o">.</span><span class="n">set_sort_column_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="n">columnaCod</span><span class="p">)</span> <span class="c1"># añado a columna á vista</span>
+
+        <span class="n">columnaNombre</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">TreeViewColumn</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">celda</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># creo unha columna</span>
+        <span class="n">columnaNombre</span><span class="o">.</span><span class="n">set_sort_column_id</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="n">columnaNombre</span><span class="p">)</span> <span class="c1"># añado a columna á vista</span>
+
+        <span class="n">celdaSexo</span><span class="o">=</span><span class="n">Gtk</span><span class="o">.</span><span class="n">CellRendererText</span><span class="p">(</span><span class="n">xalign</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span> <span class="c1"># creo un tipo de celda</span>
+        <span class="n">columnaSexo</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">TreeViewColumn</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">celdaSexo</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># creo unha columna</span>
+        <span class="n">columnaSexo</span><span class="o">.</span><span class="n">set_sort_column_id</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="n">columnaSexo</span><span class="p">)</span> <span class="c1"># añado a columna á vista</span>
+
+        <span class="n">columnaTelf</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">TreeViewColumn</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">celda</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># creo unha columna</span>
+        <span class="n">columnaTelf</span><span class="o">.</span><span class="n">set_sort_column_id</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="n">columnaTelf</span><span class="p">)</span> <span class="c1"># añado a columna á vista</span>
+
+        <span class="c1"># cando seleccionemos unha fila, emite un sinal</span>
+        <span class="n">seleccion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_selection</span><span class="p">()</span>
+        <span class="n">seleccion</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;changed&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_seleccion_changed</span><span class="p">)</span>
+
+        <span class="c1"># este label mostra a selección da fila seleccionada</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">xalign</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># boton borrar, borra a fila seleccionada</span>
+        <span class="n">btnBorrar</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Button</span><span class="p">()</span> <span class="c1">#label=&quot;Borrar&quot;,xalign=0.5</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">set_from_file</span><span class="p">(</span><span class="s2">&quot;./images/borrar_fila.png&quot;</span><span class="p">)</span>
+        <span class="n">btnBorrar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">btnBorrar</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;clicked&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_btnBorrar_clicked</span><span class="p">)</span>
+
+        <span class="c1"># engadimos a vista, o label e o botón a un Gtk.Box</span>
+        <span class="n">boxMostrar</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Orientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+        <span class="n">boxMostrar</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">boxMostrar</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">boxMostrar</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="n">btnBorrar</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># engadimos o anterior Gtk.Box a outro Gtk.Box</span>
+        <span class="n">boxMostrarClientes</span><span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Orientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+        <span class="n">boxMostrarClientes</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="n">boxMostrar</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># insertamos o Gtk.Box a o StackSwitcher</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">add_titled</span><span class="p">(</span><span class="n">boxMostrarClientes</span><span class="p">,</span> <span class="s2">&quot;Mostrar&quot;</span><span class="p">,</span> <span class="s2">&quot;Mostrar clientes&quot;</span><span class="p">)</span>
+
+
+        <span class="c1"># creo uns labels</span>
+        <span class="n">lblCod</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;    Cod. Cliente:  &quot;</span><span class="p">)</span>
+        <span class="n">lblNome</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;    Nome:  &quot;</span><span class="p">)</span>
+        <span class="n">lblSexo</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;    Sexo:  &quot;</span><span class="p">)</span>
+        <span class="n">lblTelf</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;    Telefono:  &quot;</span><span class="p">)</span>
+
+        <span class="c1"># creo uns entry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCod</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Entry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtNome</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Entry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmbSexo</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">ComboBoxText</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sexoModel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTelf</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Entry</span><span class="p">()</span>
+
+        <span class="c1"># creo un Gtk.Grid e engadolle os labels e os entry anteriores</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Grid</span><span class="p">()</span>
+        <span class="n">lblCod</span><span class="o">.</span><span class="n">set_justify</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Justification</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">lblCod</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtCod</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">lblNome</span><span class="o">.</span><span class="n">set_justify</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Justification</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">lblNome</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtNome</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">lblSexo</span><span class="o">.</span><span class="n">set_justify</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Justification</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">lblSexo</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmbSexo</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">lblTelf</span><span class="o">.</span><span class="n">set_justify</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Justification</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">lblTelf</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtTelf</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># creo tres botóns</span>
+        <span class="n">btnEngadir</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Button</span><span class="p">()</span>  <span class="c1"># label=&quot;Engadir&quot;</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">set_from_file</span><span class="p">(</span><span class="s2">&quot;./images/engadir.png&quot;</span><span class="p">)</span>
+        <span class="n">btnEngadir</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">btnEngadir</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;clicked&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_btnEngadir_clicked</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">listmodel</span><span class="p">)</span>
+
+        <span class="n">btnLimpar</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Button</span><span class="p">()</span>  <span class="c1"># label=&quot;Limpar&quot;</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">set_from_file</span><span class="p">(</span><span class="s2">&quot;./images/limpar.png&quot;</span><span class="p">)</span>
+        <span class="n">btnLimpar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">btnLimpar</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;clicked&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_btnLimpar_clicked</span><span class="p">)</span>  <span class="c1"># , self.listmodel</span>
+
+        <span class="n">btnCrearGrafica</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Button</span><span class="p">()</span>  <span class="c1"># label=&quot;Limpar&quot;</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">set_from_file</span><span class="p">(</span><span class="s2">&quot;./images/crear_grafica.png&quot;</span><span class="p">)</span>
+        <span class="n">btnCrearGrafica</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">btnCrearGrafica</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;clicked&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_btnCrearGrafica_clicked</span><span class="p">)</span>  <span class="c1"># , self.listmodel</span>
+
+        <span class="c1"># engado os botóns ao Gtk.Grid</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">btnEngadir</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">btnLimpar</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">btnCrearGrafica</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># engado o Gtk.Grid nun Gtk.Box</span>
+        <span class="n">boxAgregar</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Orientation</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+        <span class="n">boxAgregar</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># introduzco o Gtk.Box ao StackSwitcher</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">add_titled</span><span class="p">(</span><span class="n">boxAgregar</span><span class="p">,</span> <span class="s2">&quot;Agregar&quot;</span><span class="p">,</span> <span class="s2">&quot;Agregar clientes&quot;</span><span class="p">)</span>
+
+        <span class="c1"># creo a selección do StarckSwitcher</span>
+        <span class="n">selector_stack</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">StackSwitcher</span><span class="p">()</span>
+        <span class="n">selector_stack</span><span class="o">.</span><span class="n">set_stack</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
+
+        <span class="c1"># engado o selector e o stack ao Gtk.Box principal</span>
+        <span class="n">caixa</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="n">selector_stack</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">caixa</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;delete-event&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">destroyed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
+
+
+    <span class="c1"># función &quot;on_seleccion_changed&quot;:</span>
+    <span class="c1"># selecciona a fila seleccionada no TreeView e mostrar dita fila nun label</span>
+<div class="viewcode-block" id="XestionClientes.on_seleccion_changed"><a class="viewcode-back" href="../XestionClientes.html#XestionClientes.XestionClientes.on_seleccion_changed">[documentos]</a>    <span class="k">def</span> <span class="nf">on_seleccion_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">seleccion</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;selecciona a fila seleccionada no TreeView e mostrar dita fila nun label</span>
+
+<span class="sd">                :param seleccion: selecciona a fila</span>
+<span class="sd">                :type seleccion: Widget</span>
+<span class="sd">                :return: None</span>
+<span class="sd">                :raises: AttributeError, KeyError</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+        <span class="n">modelo</span><span class="p">,</span><span class="n">punteiro</span><span class="o">=</span><span class="n">seleccion</span><span class="o">.</span><span class="n">get_selected</span><span class="p">()</span> <span class="c1"># get_selected -&gt; nos va a dar unha tupla donde vamos a tener por un lado o punteiro e por outro lado ...</span>
+        <span class="k">if</span> <span class="n">punteiro</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="n">modelo</span><span class="p">[</span><span class="n">punteiro</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">modelo</span><span class="p">[</span><span class="n">punteiro</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">modelo</span><span class="p">[</span><span class="n">punteiro</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">modelo</span><span class="p">[</span><span class="n">punteiro</span><span class="p">][</span><span class="mi">3</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">codCliente</span><span class="o">=</span><span class="n">modelo</span><span class="p">[</span><span class="n">punteiro</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+
+    <span class="c1"># función &quot;on_btnBorrar_clicked&quot;:</span>
+    <span class="c1"># ao clickar o botón, borra a fila seleccionada no TreeView e na Base de Datos</span>
+<div class="viewcode-block" id="XestionClientes.on_btnBorrar_clicked"><a class="viewcode-back" href="../XestionClientes.html#XestionClientes.XestionClientes.on_btnBorrar_clicked">[documentos]</a>    <span class="k">def</span> <span class="nf">on_btnBorrar_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">modelo</span><span class="p">):</span><span class="c1">#modelo,selection</span>
+        <span class="sd">&quot;&quot;&quot;ao clickar o botón, borra a fila seleccionada no TreeView e na Base de Datos</span>
+
+<span class="sd">                :param modelo: modelo do TreeView (ListStore)</span>
+<span class="sd">                :type modelo: ListStore</span>
+<span class="sd">                :return: None</span>
+<span class="sd">                :raises: AttributeError, KeyError</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;delete from clientes where codCliente=&#39;&quot;&quot;&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">codCliente</span><span class="o">+</span><span class="s2">&quot;&quot;&quot;&#39;&quot;&quot;&quot;</span><span class="p">)</span> <span class="c1">#&#39;DELETE FROM tabla1 WHERE valor = 2018&#39;)+self.txtCod.get_text()+</span>
+        <span class="n">bbdd</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refrescar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">listmodel</span><span class="p">)</span></div>
+
+    <span class="c1"># función &quot;refrescar&quot;:</span>
+    <span class="c1"># refresca as filas do TreeView cando hai algunha modificación na Base de Datos</span>
+<div class="viewcode-block" id="XestionClientes.refrescar"><a class="viewcode-back" href="../XestionClientes.html#XestionClientes.XestionClientes.refrescar">[documentos]</a>    <span class="k">def</span> <span class="nf">refrescar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">modelo</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;refresca as filas do TreeView cando hai algunha modificación na Base de Datos</span>
+
+<span class="sd">                :param modelo: modelo do TreeView (ListStore)</span>
+<span class="sd">                :type modelo: ListStore</span>
+<span class="sd">                :return: None</span>
+<span class="sd">                :raises: AttributeError, KeyError</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+        <span class="n">cursorClientes</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;select * from clientes&quot;</span><span class="p">)</span>
+        <span class="n">modelo</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">rexistro</span> <span class="ow">in</span> <span class="n">cursorClientes</span><span class="p">:</span>
+            <span class="n">modelo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rexistro</span><span class="p">)</span></div>
+
+    <span class="c1"># función &quot;on_btnEngadir_clicked&quot;:</span>
+    <span class="c1"># engade na Base de Datos e no TreeView o novo cliente introducido</span>
+<div class="viewcode-block" id="XestionClientes.on_btnEngadir_clicked"><a class="viewcode-back" href="../XestionClientes.html#XestionClientes.XestionClientes.on_btnEngadir_clicked">[documentos]</a>    <span class="k">def</span> <span class="nf">on_btnEngadir_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cotrol</span><span class="p">,</span><span class="n">modelo</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;engade na Base de Datos e no TreeView o novo cliente introducido</span>
+
+<span class="sd">                :param control: celda da táboa</span>
+<span class="sd">                :type control: Widget</span>
+<span class="sd">                :param modelo: modelo do TreeView (ListStore)</span>
+<span class="sd">                :type modelo: ListStore</span>
+<span class="sd">                :return: None</span>
+<span class="sd">                :raises: AttributeError, KeyError</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+        <span class="n">fila</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmbSexo</span><span class="o">.</span><span class="n">get_active_iter</span><span class="p">()</span>  <span class="c1"># get_active_iter -&gt; indica/recoge cual está seleccionado</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;insert into clientes values (&#39;&quot;&quot;&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">txtCod</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot;&quot;&quot;&#39;,&#39;&quot;&quot;&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">txtNome</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot;&quot;&quot;&#39;,&#39;&quot;&quot;&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">cmbSexo</span><span class="o">.</span><span class="n">get_model</span><span class="p">()[</span><span class="n">fila</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;&quot;&quot;&#39;,&#39;&quot;&quot;&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">txtTelf</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot;&quot;&quot;&#39;)&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="n">bbdd</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCod</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtNome</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTelf</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refrescar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">listmodel</span><span class="p">)</span></div>
+
+    <span class="c1"># función &quot;on_btnLimpar_clicked&quot;:</span>
+    <span class="c1"># ao pulsar no botón limpa o texto dos entry</span>
+<div class="viewcode-block" id="XestionClientes.on_btnLimpar_clicked"><a class="viewcode-back" href="../XestionClientes.html#XestionClientes.XestionClientes.on_btnLimpar_clicked">[documentos]</a>    <span class="k">def</span> <span class="nf">on_btnLimpar_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">modelo</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;ao pulsar no botón limpa o texto dos entry</span>
+
+<span class="sd">                :param modelo: modelo do TreeView (ListStore)</span>
+<span class="sd">                :type modelo: ListStore</span>
+<span class="sd">                :return: None</span>
+<span class="sd">                :raises: AttributeError, KeyError</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+        <span class="n">fila</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmbSexo</span><span class="o">.</span><span class="n">get_active_iter</span><span class="p">()</span>  <span class="c1"># get_active_iter -&gt; indica/recoge cual está seleccionado</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCod</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtNome</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTelf</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+    <span class="c1"># función &quot;on_btnCrearGrafica_clicked&quot;:</span>
+    <span class="c1"># ao pulsao o botón crea un arquivo.pdf que mostra unha gráfica co porcentaxe de clientes homes e mulleres</span>
+<div class="viewcode-block" id="XestionClientes.on_btnCrearGrafica_clicked"><a class="viewcode-back" href="../XestionClientes.html#XestionClientes.XestionClientes.on_btnCrearGrafica_clicked">[documentos]</a>    <span class="k">def</span> <span class="nf">on_btnCrearGrafica_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">modelo</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;ao pulsao o botón crea un arquivo.pdf que mostra unha gráfica co porcentaxe de clientes homes e mulleres</span>
+
+<span class="sd">                :param modelo: modelo do TreeView (ListStore)</span>
+<span class="sd">                :type modelo: ListStore</span>
+<span class="sd">                :return: None</span>
+<span class="sd">                :raises: AttributeError, KeyError</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xGrafica</span> <span class="o">=</span> <span class="n">Grafica</span><span class="p">()</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">XestionClientes</span><span class="p">()</span>
+    <span class="n">Gtk</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ACABAS DE ENTRAR NA CLASE DE XESTION DE CLIENTES&quot;</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">AppPeluqueria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navegación</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../PaxinaPrincipal.html">GUIA DE USO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">TraballoPerruqueria-Python_David</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Código de módulo</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Búsqueda rápida</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, David Fernandez Guerreiro.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -13,6 +13,14 @@ bbdd = dbapi2.connect("PeluqueriaBD.dat")
 cursor = bbdd.cursor()
 
 class Grafica():
+    """Xenera un documento pdf mostrando unha gráfica co porcentaxe de cliente homes e mulleres
+
+            **Métodos:**
+                - __init__
+                - Neste módulo non hai ningún método, simpletemente crea a gráfica
+
+                """
+
     def __init__(self):
         guion=[]
         d=Drawing(400,200)

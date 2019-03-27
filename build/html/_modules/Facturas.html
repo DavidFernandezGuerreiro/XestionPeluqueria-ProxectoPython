@@ -1,0 +1,220 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Facturas &#8212; documentación de AppPeluqueria - </title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Código fuente para Facturas</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">from</span> <span class="nn">reportlab.platypus</span> <span class="k">import</span> <span class="p">(</span><span class="n">SimpleDocTemplate</span><span class="p">,</span><span class="n">PageBreak</span><span class="p">,</span><span class="n">Image</span><span class="p">,</span><span class="n">Spacer</span><span class="p">,</span><span class="n">Table</span><span class="p">,</span><span class="n">TableStyle</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">reportlab.lib.pagesizes</span> <span class="k">import</span> <span class="n">A4</span>
+<span class="kn">from</span> <span class="nn">reportlab.lib</span> <span class="k">import</span> <span class="n">colors</span>
+<span class="kn">from</span> <span class="nn">reportlab.lib.units</span> <span class="k">import</span> <span class="n">inch</span>
+
+<span class="kn">from</span> <span class="nn">sqlite3</span> <span class="k">import</span> <span class="n">dbapi2</span>
+
+<span class="c1"># variables:</span>
+<span class="c1"># bbdd -&gt; conecta ca Base de Datos</span>
+<span class="c1"># cursor -&gt; executa as sentencias query e recolle os datos</span>
+<span class="n">bbdd</span><span class="o">=</span><span class="n">dbapi2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;PeluqueriaBD.dat&quot;</span><span class="p">)</span>
+<span class="n">cursor</span><span class="o">=</span><span class="n">bbdd</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Facturas"><a class="viewcode-back" href="../Facturas.html#Facturas.Facturas">[documentos]</a><span class="k">class</span> <span class="nc">Facturas</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Xenera un documento pdf cas facturas dos clientes</span>
+
+<span class="sd">            **Métodos:**</span>
+<span class="sd">                - __init__</span>
+<span class="sd">                - Neste módulo non hai ningún método, simpletemente crea as facturas</span>
+
+<span class="sd">                &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">detalleFactura</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">facturas</span><span class="o">=</span><span class="p">[]</span>
+
+        <span class="c1"># executamos un cursor para os numFactura</span>
+        <span class="n">cursorConsultaFacturas</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;select numFactura from facturas&quot;</span><span class="p">)</span>
+        <span class="n">listaFacturas</span><span class="o">=</span><span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">numFactura</span> <span class="ow">in</span> <span class="n">cursorConsultaFacturas</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">numFactura</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">listaFacturas</span><span class="p">:</span>
+                <span class="n">listaFacturas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">numFactura</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">listaFacturas</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># executamos un cursor e recollemos o codCliente, codServizo e cantidade</span>
+        <span class="k">for</span> <span class="n">numFactura</span> <span class="ow">in</span> <span class="n">listaFacturas</span><span class="p">:</span>
+            <span class="n">codigoCliente</span><span class="o">=</span><span class="kc">None</span>
+            <span class="n">consultaFactura</span><span class="o">=</span><span class="kc">None</span>
+            <span class="c1">#es distinto al de arriba &quot;cursorConsultaFactura&quot;</span>
+            <span class="n">cursorConsultaFactura</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;select codCliente,codServizo,cantidade from facturas where numFactura=?&quot;</span><span class="p">,(</span><span class="nb">int</span><span class="p">(</span><span class="n">numFactura</span><span class="p">),))</span>
+            <span class="n">codigoCliente</span><span class="o">=</span><span class="n">cursorConsultaFactura</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># insertamos o codCliente e o numFactura na Factura</span>
+            <span class="n">detalleFactura</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s1">&#39;Cod Cliente:&#39;</span><span class="p">,</span><span class="n">codigoCliente</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;Num Factura:&#39;</span><span class="p">,</span><span class="n">numFactura</span><span class="p">])</span> <span class="c1">#cada liña da factura vai ser unha lista</span>
+
+            <span class="c1"># executamos un cursor e recollemos o nomCliente e o telfCliente do cliente dependendo do codCliente</span>
+            <span class="n">cursorConsultaFactura</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;select nomCliente,telfCliente from clientes where codCliente=&#39;&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">codigoCliente</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+            <span class="n">rexistroCliente</span><span class="o">=</span><span class="n">cursorConsultaFactura</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+
+            <span class="c1"># insertamos o nomCliente e o telfCliente na Factura</span>
+            <span class="n">detalleFactura</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s1">&#39;Nome:&#39;</span><span class="p">,</span><span class="n">rexistroCliente</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">])</span>
+            <span class="n">detalleFactura</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s1">&#39;Teléfono:&#39;</span><span class="p">,</span><span class="n">rexistroCliente</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">])</span>
+
+            <span class="c1"># executamos un cursor e recollemos o codServizo e a cantidade do servizo dependendo do numFactura</span>
+            <span class="n">cursorConsultaDetalleFactura</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;select codServizo,cantidade from facturas where numFactura=?&quot;</span><span class="p">,(</span><span class="n">numFactura</span><span class="p">,))</span>
+            <span class="n">lconsultaDetalleFactura</span><span class="o">=</span><span class="p">[]</span>
+            <span class="k">for</span> <span class="n">elementoFactura</span> <span class="ow">in</span> <span class="n">cursorConsultaDetalleFactura</span><span class="p">:</span>
+                <span class="c1"># insertamos o codServizo e a cantidade nunha lista da Factura</span>
+                <span class="n">lconsultaDetalleFactura</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">elementoFactura</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">elementoFactura</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">elementoFactura</span><span class="p">)</span>
+
+            <span class="n">detalleFactura</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">])</span>
+            <span class="c1"># introducimos a cabeceira da lista da Factura:</span>
+            <span class="n">detalleFactura</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;Código servizo&quot;</span><span class="p">,</span><span class="s2">&quot;Descripción&quot;</span><span class="p">,</span><span class="s2">&quot;Cantidade&quot;</span><span class="p">,</span><span class="s2">&quot;Prezo unitario&quot;</span><span class="p">,</span><span class="s2">&quot;Prezo&quot;</span><span class="p">])</span>
+            <span class="n">prezoTotal</span><span class="o">=</span><span class="mi">0</span>
+            <span class="k">for</span> <span class="n">elemento</span> <span class="ow">in</span> <span class="n">lconsultaDetalleFactura</span><span class="p">:</span>
+                <span class="c1"># executamos o cursor e recollemos o nomServizo e o prezoServizo dos servizos dependendo do codServizo</span>
+                <span class="n">cursorConsultaServizo</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;select nomServizo,prezoServizo from servizos where codServizo=&#39;&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">elemento</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+                <span class="n">rexistroServizo</span><span class="o">=</span><span class="n">cursorConsultaServizo</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">elemento</span><span class="p">)</span>
+
+                <span class="c1"># facemos o calculo do total da Factura</span>
+                <span class="n">prezo</span><span class="o">=</span><span class="n">elemento</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">rexistroServizo</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">detalleFactura</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">elemento</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">rexistroServizo</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">elemento</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">rexistroServizo</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">prezo</span><span class="p">])</span> <span class="c1">#calculo</span>
+                <span class="n">prezoTotal</span><span class="o">=</span><span class="n">prezoTotal</span><span class="o">+</span><span class="n">prezo</span>
+
+            <span class="c1"># insertamos na lista da Factura o prezo total da Factura</span>
+            <span class="n">detalleFactura</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="s2">&quot;Prezo total:&quot;</span><span class="p">,</span><span class="n">prezoTotal</span><span class="p">])</span>
+            <span class="n">facturas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">detalleFactura</span><span class="p">))</span>
+            <span class="n">detalleFactura</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+
+        <span class="c1"># lle damos un nome ao documento</span>
+        <span class="n">doc</span><span class="o">=</span><span class="n">SimpleDocTemplate</span><span class="p">(</span><span class="s2">&quot;facturas.pdf&quot;</span><span class="p">,</span><span class="n">pagesize</span><span class="o">=</span><span class="n">A4</span><span class="p">)</span>
+        <span class="n">guion</span><span class="o">=</span><span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">factura</span> <span class="ow">in</span> <span class="n">facturas</span><span class="p">:</span>
+            <span class="n">taboa</span><span class="o">=</span><span class="n">Table</span><span class="p">(</span><span class="n">factura</span><span class="p">,</span><span class="n">colWidths</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span><span class="n">rowHeights</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span><span class="c1">#colWidths=anchura dos cuadrados da taboa. rowHeights=altura dos cuadrados da taboa.</span>
+            <span class="n">taboa</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">TableStyle</span><span class="p">([</span>
+                <span class="p">(</span><span class="s1">&#39;TEXTCOLOR&#39;</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="n">colors</span><span class="o">.</span><span class="n">chocolate</span><span class="p">),</span> <span class="c1">#lle damos color á primeira fila.</span>
+                <span class="p">(</span><span class="s1">&#39;TEXTCOLOR&#39;</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">),(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">colors</span><span class="o">.</span><span class="n">green</span><span class="p">),</span> <span class="c1">#(fila,elemento)</span>
+                <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">),(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">colors</span><span class="o">.</span><span class="n">lightgrey</span><span class="p">),</span> <span class="c1">#vai a coller toda a taboa menos la cabecera.     lightcyan</span>
+                <span class="p">(</span><span class="s1">&#39;ALIGN&#39;</span><span class="p">,(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">),(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="s1">&#39;RIGHT&#39;</span><span class="p">),</span> <span class="c1">#alinea o texto nas celdas á dereita.</span>
+                <span class="p">(</span><span class="s1">&#39;VALIGN&#39;</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="s1">&#39;MIDDLE&#39;</span><span class="p">),</span> <span class="c1">#alineamiento ao medio do folio.</span>
+                <span class="p">(</span><span class="s1">&#39;BOX&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">black</span><span class="p">),</span> <span class="c1"># creamos outro box para os datos de arriba</span>
+                <span class="p">(</span><span class="s1">&#39;BOX&#39;</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">),(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">colors</span><span class="o">.</span><span class="n">black</span><span class="p">),</span> <span class="c1">#pon unha caixa no contorno. (o &quot;1&quot; é o ancho da liña da taboa).</span>
+                <span class="p">(</span><span class="s1">&#39;INNERGRID&#39;</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">),(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span><span class="mf">0.5</span><span class="p">,</span><span class="n">colors</span><span class="o">.</span><span class="n">grey</span><span class="p">)</span> <span class="c1">#o grid que hai no medio. (as liñas de dentro)</span>
+            <span class="p">]))</span>
+
+            <span class="c1"># poño una imaxe co logo da Perruquería</span>
+            <span class="n">logo</span><span class="o">=</span><span class="s2">&quot;./images/logo_barber_factura.png&quot;</span>
+            <span class="n">img</span><span class="o">=</span><span class="n">Image</span><span class="p">(</span><span class="n">logo</span><span class="p">,</span><span class="mf">5.7</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span><span class="mf">2.5</span><span class="o">*</span><span class="n">inch</span><span class="p">)</span> <span class="c1"># damoslle unhas medidas á imaxe</span>
+            <span class="n">guion</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="n">guion</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">taboa</span><span class="p">)</span>
+            <span class="n">guion</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">40</span><span class="p">))</span>
+            <span class="n">guion</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PageBreak</span><span class="p">())</span> <span class="c1">#cada factura nunha páxina (salto de páxina)</span>
+
+        <span class="n">doc</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">guion</span><span class="p">)</span> <span class="c1">#crea o documento.</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">Facturas</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">AppPeluqueria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navegación</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../PaxinaPrincipal.html">GUIA DE USO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">TraballoPerruqueria-Python_David</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Código de módulo</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Búsqueda rápida</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, David Fernandez Guerreiro.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

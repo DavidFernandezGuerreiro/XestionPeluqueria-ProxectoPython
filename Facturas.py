@@ -13,6 +13,14 @@ bbdd=dbapi2.connect("PeluqueriaBD.dat")
 cursor=bbdd.cursor()
 
 class Facturas():
+    """Xenera un documento pdf cas facturas dos clientes
+
+            **Métodos:**
+                - __init__
+                - Neste módulo non hai ningún método, simpletemente crea as facturas
+
+                """
+
     def __init__(self):
 
         detalleFactura=[]

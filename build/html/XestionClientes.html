@@ -1,0 +1,259 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>XestionClientes module &#8212; documentación de AppPeluqueria - </title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="XestionFacturas module" href="XestionFacturas.html" />
+    <link rel="prev" title="MenuPrincipal module" href="MenuPrincipal.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-XestionClientes">
+<span id="xestionclientes-module"></span><h1>XestionClientes module<a class="headerlink" href="#module-XestionClientes" title="Enlazar permanentemente con este título">¶</a></h1>
+<dl class="class">
+<dt id="XestionClientes.XestionClientes">
+<em class="property">class </em><code class="descclassname">XestionClientes.</code><code class="descname">XestionClientes</code><a class="reference internal" href="_modules/XestionClientes.html#XestionClientes"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#XestionClientes.XestionClientes" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gi.overrides.Gtk.Window</span></code></p>
+<p>Ventana da xestión dos clientes</p>
+<dl class="docutils">
+<dt><strong>Métodos:</strong></dt>
+<dd><ul class="first last simple">
+<li>__init__</li>
+<li>on_seleccion_changed</li>
+<li>on_btnBorrar_clicked</li>
+<li>refrescar</li>
+<li>on_btnEngadir_clicked</li>
+<li>on_btnLimpar_clicked</li>
+<li>on_btnCrearGrafica_clicked</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="XestionClientes.XestionClientes.on_btnBorrar_clicked">
+<code class="descname">on_btnBorrar_clicked</code><span class="sig-paren">(</span><em>modelo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/XestionClientes.html#XestionClientes.on_btnBorrar_clicked"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#XestionClientes.XestionClientes.on_btnBorrar_clicked" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>ao clickar o botón, borra a fila seleccionada no TreeView e na Base de Datos</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><strong>modelo</strong> (<em>ListStore</em>) – modelo do TreeView (ListStore)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body">None</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">AttributeError, KeyError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XestionClientes.XestionClientes.on_btnCrearGrafica_clicked">
+<code class="descname">on_btnCrearGrafica_clicked</code><span class="sig-paren">(</span><em>modelo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/XestionClientes.html#XestionClientes.on_btnCrearGrafica_clicked"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#XestionClientes.XestionClientes.on_btnCrearGrafica_clicked" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>ao pulsao o botón crea un arquivo.pdf que mostra unha gráfica co porcentaxe de clientes homes e mulleres</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><strong>modelo</strong> (<em>ListStore</em>) – modelo do TreeView (ListStore)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body">None</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">AttributeError, KeyError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XestionClientes.XestionClientes.on_btnEngadir_clicked">
+<code class="descname">on_btnEngadir_clicked</code><span class="sig-paren">(</span><em>cotrol</em>, <em>modelo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/XestionClientes.html#XestionClientes.on_btnEngadir_clicked"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#XestionClientes.XestionClientes.on_btnEngadir_clicked" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>engade na Base de Datos e no TreeView o novo cliente introducido</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first simple">
+<li><strong>control</strong> (<em>Widget</em>) – celda da táboa</li>
+<li><strong>modelo</strong> (<em>ListStore</em>) – modelo do TreeView (ListStore)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body"><p class="first">None</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">AttributeError, KeyError</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XestionClientes.XestionClientes.on_btnLimpar_clicked">
+<code class="descname">on_btnLimpar_clicked</code><span class="sig-paren">(</span><em>modelo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/XestionClientes.html#XestionClientes.on_btnLimpar_clicked"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#XestionClientes.XestionClientes.on_btnLimpar_clicked" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>ao pulsar no botón limpa o texto dos entry</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><strong>modelo</strong> (<em>ListStore</em>) – modelo do TreeView (ListStore)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body">None</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">AttributeError, KeyError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XestionClientes.XestionClientes.on_seleccion_changed">
+<code class="descname">on_seleccion_changed</code><span class="sig-paren">(</span><em>seleccion</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/XestionClientes.html#XestionClientes.on_seleccion_changed"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#XestionClientes.XestionClientes.on_seleccion_changed" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>selecciona a fila seleccionada no TreeView e mostrar dita fila nun label</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><strong>seleccion</strong> (<em>Widget</em>) – selecciona a fila</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body">None</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">AttributeError, KeyError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="XestionClientes.XestionClientes.refrescar">
+<code class="descname">refrescar</code><span class="sig-paren">(</span><em>modelo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/XestionClientes.html#XestionClientes.refrescar"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#XestionClientes.XestionClientes.refrescar" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>refresca as filas do TreeView cando hai algunha modificación na Base de Datos</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><strong>modelo</strong> (<em>ListStore</em>) – modelo do TreeView (ListStore)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body">None</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">AttributeError, KeyError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">AppPeluqueria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navegación</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="PaxinaPrincipal.html">GUIA DE USO</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">TraballoPerruqueria-Python_David</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="BaseDatos.html">BaseDatos module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Facturas.html">Facturas module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GraficaSexos.html">GraficaSexos module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MenuPrincipal.html">MenuPrincipal module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">XestionClientes module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XestionFacturas.html">XestionFacturas module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XestionServizos.html">XestionServizos module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">TraballoPerruqueria-Python_David</a><ul>
+      <li>Previous: <a href="MenuPrincipal.html" title="capítulo anterior">MenuPrincipal module</a></li>
+      <li>Next: <a href="XestionFacturas.html" title="próximo capítulo">XestionFacturas module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Búsqueda rápida</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, David Fernandez Guerreiro.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/XestionClientes.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

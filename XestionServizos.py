@@ -20,6 +20,23 @@ bbdd = dbapi2.connect("PeluqueriaBD.dat")
 cursor = bbdd.cursor()
 
 class XestionServizos(Gtk.Window):
+    """Ventana da xestión dos servizos
+
+            **Métodos:**
+                - __init__
+
+                - on_seleccion_changed
+
+                - on_btnBorrar_clicked
+
+                - refrescar
+
+                - on_btnEngadir_clicked
+
+                - on_btnLimpar_clicked
+
+                """
+
     def __init__(self):
         Gtk.Window.__init__(self, title="Ventana Xestión de servizos")
 
@@ -154,6 +171,13 @@ class XestionServizos(Gtk.Window):
     # función "on_seleccion_changed":
     # selecciona a fila seleccionada no TreeView e mostrar dita fila nun label
     def on_seleccion_changed(self,seleccion):
+        """selecciona a fila seleccionada no TreeView e mostrar dita fila nun label
+
+                :param seleccion: selecciona a fila
+                :type seleccion: Widget
+                :return: None
+                :raises: AttributeError, KeyError
+                """
         modelo,punteiro=seleccion.get_selected() # get_selected -> nos va a dar unha tupla donde vamos a tener por un lado o punteiro e por outro lado ...
         if punteiro is not None:
             self.label.set_text("%s %s %s" %
@@ -163,6 +187,13 @@ class XestionServizos(Gtk.Window):
     # función "on_btnBorrar_clicked":
     # ao clickar o botón, borra a fila seleccionada no TreeView e na Base de Datos
     def on_btnBorrar_clicked(self,modelo):#modelo,selection
+        """ao clickar o botón, borra a fila seleccionada no TreeView e na Base de Datos
+
+                :param modelo: modelo do TreeView (ListStore)
+                :type modelo: ListStore
+                :return: None
+                :raises: AttributeError, KeyError
+                """
         cursor.execute("""delete from servizos where codServizo='""" + self.codServizo + """'""") #'DELETE FROM tabla1 WHERE valor = 2018')+self.txtCod.get_text()+
         bbdd.commit()
         self.label.set_text("")
@@ -171,6 +202,13 @@ class XestionServizos(Gtk.Window):
     # función "refrescar":
     # refresca as filas do TreeView cando hai algunha modificación na Base de Datos
     def refrescar(self,modelo):
+        """refresca as filas do TreeView cando hai algunha modificación na Base de Datos
+
+                :param modelo: modelo do TreeView (ListStore)
+                :type modelo: ListStore
+                :return: None
+                :raises: AttributeError, KeyError
+                """
         cursorSevizo = cursor.execute("select * from servizos")
         modelo.clear()
         for rexistro in cursorSevizo:
@@ -179,6 +217,15 @@ class XestionServizos(Gtk.Window):
     # función "on_btnEngadir_clicked":
     # engade na Base de Datos e no TreeView o novo cliente introducido
     def on_btnEngadir_clicked(self,cotrol,modelo):
+        """engade na Base de Datos e no TreeView o novo cliente introducido
+
+                :param control: celda da táboa
+                :type control: Widget
+                :param modelo: modelo do TreeView (ListStore)
+                :type modelo: ListStore
+                :return: None
+                :raises: AttributeError, KeyError
+                """
         cursor.execute("""insert into servizos values ('""" + self.txtCod.get_text() +"""','""" + self.txtNome.get_text() +"""','""" + self.txtPrezo.get_text() + """')""")
         bbdd.commit()
         self.txtCod.set_text("")
@@ -189,6 +236,13 @@ class XestionServizos(Gtk.Window):
     # función "on_btnLimpar_clicked":
     # ao pulsar no botón limpa o texto dos entry
     def on_btnLimpar_clicked(self,modelo):
+        """ao pulsar no botón limpa o texto dos entry
+
+                :param modelo: modelo do TreeView (ListStore)
+                :type modelo: ListStore
+                :return: None
+                :raises: AttributeError, KeyError
+                """
         self.txtCod.set_text("")
         self.txtNome.set_text("")
         self.txtPrezo.set_text("")

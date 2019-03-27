@@ -6,6 +6,20 @@ from XestionServizos import XestionServizos
 from XestionFacturas import XestionFacturas
 
 class VentanaPrincipal(Gtk.Window):
+    """Ventana principal da apliación.
+
+        **Métodos:**
+            - __init__
+
+            - on_clientes_clicked
+
+            - on_servizos_clicked
+
+            - on_facturas_clicked
+
+            - on_close_clicked
+
+        """
 
     def __init__(self):
         Gtk.Window.__init__(self, title="Ventana Principal")
@@ -48,20 +62,45 @@ class VentanaPrincipal(Gtk.Window):
         self.show_all()
 
 
-    #cada función chama a súa clase e a executa
+    """Chama ao módulo XestionClientes"""
     def on_clientes_clicked(self, button):
+        """Chama ao módulo XestionClientes
+
+            :param xClientes: obxeto do módulo XestionClientes
+            :type xClientes: Obxeto
+            :return: None
+            :raises: AttributeError, KeyError
+        """
         print("Xestión de clientes")
         self.xClientes = XestionClientes()
 
+    """Chama ao módulo XestionServizos"""
     def on_servizos_clicked(self, button):
+        """Chama ao módulo XestionServizos
+
+            :param xServizos: obxeto do módulo XestionServizos
+            :type xServizos: Obxeto
+            :return: None
+            :raises: AttributeError, KeyError
+        """
         print("Xestión de servizos")
         self.xServizos = XestionServizos()
 
+    """Chama ao módulo XestionFacturas"""
     def on_facturas_clicked(self, button):
+        """Chama ao módulo XestionFacturas
+
+            :param xFacturas: obxeto do módulo XestionFacturas
+            :type xFacturas: Obxeto
+            :return: None
+            :raises: AttributeError, KeyError
+        """
         print("Xestión de facturas")
         self.xFacturas = XestionFacturas()
 
     def on_close_clicked(self, button):
+        """Cerra a aplicación
+        """
         print("Closing application")
         Gtk.main_quit()
 
